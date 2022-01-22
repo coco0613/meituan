@@ -1,5 +1,5 @@
 <template>
-  <div class="item">
+  <div class="item" @click="toStore">
     <img :src="item.pic" alt="" />
     <div class="item_right">
       <div class="title">{{ item.title }}</div>
@@ -13,8 +13,18 @@
 </template>
 
 <script>
+import { useRouter } from "vue-router";
 export default {
   props: ["item"],
+  setup() {
+    const router = useRouter();
+    const toStore = () => {
+      router.push("./store");
+    };
+    return {
+      toStore,
+    };
+  },
 };
 </script>
 

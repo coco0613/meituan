@@ -23,6 +23,10 @@ const router = createRouter({
       path: '/mine',
       component: () => import('../pages/mine/Mine'),
     },
+    {
+      path: '/store',
+      component: () => import('../pages/store/MyStore'),
+    },
   ],
 });
 
