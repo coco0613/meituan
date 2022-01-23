@@ -11,7 +11,7 @@
         <div class="classify">
           <van-tabs color="#ffc400">
             <van-tab v-for="(i, index) in storeData" :title="i.name">
-              <FoodList />
+              <FoodList :index="index" :foodData="i.data" />
             </van-tab>
           </van-tabs>
         </div>
