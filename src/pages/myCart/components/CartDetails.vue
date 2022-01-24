@@ -27,6 +27,7 @@
 import { computed, onMounted, reactive, toRefs } from "vue";
 import { useStore } from "vuex";
 import FoodAdd from "../../../components/FoodAdd.vue";
+import { Toast } from "_vant@3.4.2@vant";
 export default {
   components: { FoodAdd },
   setup() {
@@ -63,8 +64,21 @@ export default {
       }
     };
 
+    // 更新数据
+    const updata = () => {
+      return store.state.cartList.filter((item) =>
+        data.result.includes(item.id)
+      );
+    };
+
     // 结算按钮
-    const onSubmit = () => {};
+    const onSubmit = () => {
+      if (data.result.length !== 0) {
+        store.commit("PAY", updata());
+      } else {
+        Toast.fail("请选择要结算的商品");
+      }
+    };
 
     // 每个复选框的点击事件触发
     const groupChange = (result) => {
