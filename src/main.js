@@ -12,6 +12,8 @@ import {
   ActionBarButton,
   ActionBarIcon,
   ActionBar,
+  Checkbox,
+  CheckboxGroup,
 } from 'vant';
 import router from './router/index';
 import './common/css/base.less';
@@ -29,7 +31,9 @@ app
   .use(Stepper)
   .use(ActionBarButton)
   .use(ActionBarIcon)
-  .use(ActionBar);
+  .use(ActionBar)
+  .use(Checkbox)
+  .use(CheckboxGroup);
 
 app.use(router);
 app.use(store);
