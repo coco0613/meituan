@@ -2,18 +2,29 @@
   <div class="cartDetails">
     <!-- 商品的列表 -->
     <div class="content">
-      <van-checkbox-group v-model="result">
+      <van-checkbox-group v-model="result" @change="groupChange">
         <div v-for="(i, index) in store.state.cartList">
-          <FoodAdd :item="i" :addClick="addClick" :showCheckbox="true" />
+          <FoodAdd :item="i" :showCheckbox="true" :onChange="onChange" />
         </div>
       </van-checkbox-group>
     </div>
     <!-- 结算 -->
+    <van-submit-bar
+      :price="allPrice * 100"
+      button-text="结算"
+      @submit="onSubmit"
+      class="submit-all"
+      button-color="#ffc400"
+    >
+      <van-checkbox v-model="checked" checked-color="#ffc400" @click="choseAll">
+        全选
+      </van-checkbox>
+    </van-submit-bar>
   </div>
 </template>
 
 <script>
-import { reactive, toRefs } from "vue";
+import { computed, onMounted, reactive, toRefs } from "vue";
 import { useStore } from "vuex";
 import FoodAdd from "../../../components/FoodAdd.vue";
 export default {
@@ -21,15 +32,70 @@ export default {
   setup() {
     const store = useStore();
     let data = reactive({
-      result: [0, 1],
+      result: [],
+      checked: true,
     });
 
-    const addClick = () => {};
+    // 商品默认选中的初始化
+    const init = () => {
+      data.result = store.state.cartList.map((item) => item.id);
+    };
+
+    onMounted(() => {
+      init();
+    });
+
+    // 商品的个数同步
+    const onChange = (value, detail) => {
+      store.state.cartList.map((item) => {
+        if (item.id === detail.name) {
+          item.num = value;
+        }
+      });
+    };
+
+    // 全选或者取消全选
+    const choseAll = () => {
+      if (data.result.length !== store.state.cartList.length) {
+        init();
+      } else {
+        data.result = [];
+      }
+    };
+
+    // 结算按钮
+    const onSubmit = () => {};
+
+    // 每个复选框的点击事件触发
+    const groupChange = (result) => {
+      if (result.length === store.state.cartList.length) {
+        data.checked = true;
+      } else {
+        data.checked = false;
+      }
+      data.result = result;
+    };
+
+    // 总价
+    const allPrice = computed(() => {
+      let countList = store.state.cartList.filter((item) =>
+        data.result.includes(item.id)
+      );
+      let sum = 0;
+      countList.forEach((item) => {
+        sum += item.num * item.price;
+      });
+      return sum;
+    });
 
     return {
       ...toRefs(data),
       store,
-      addClick,
+      onChange,
+      onSubmit,
+      choseAll,
+      groupChange,
+      allPrice,
     };
   },
 };
@@ -44,7 +110,7 @@ export default {
   padding: 20px 20px 55px;
   .submit-all {
     position: fixed;
-    bottom: 58px;
+    bottom: 48px;
   }
 
   .buy {

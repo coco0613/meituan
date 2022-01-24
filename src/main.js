@@ -14,6 +14,7 @@ import {
   ActionBar,
   Checkbox,
   CheckboxGroup,
+  SubmitBar,
 } from 'vant';
 import router from './router/index';
 import './common/css/base.less';
@@ -33,6 +34,7 @@ app
   .use(ActionBarIcon)
   .use(ActionBar)
   .use(Checkbox)
+  .use(SubmitBar)
   .use(CheckboxGroup);
 
 app.use(router);
