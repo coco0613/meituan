@@ -17,6 +17,22 @@
         </div>
       </div>
     </div>
+
+    <van-action-bar>
+      <van-action-bar-icon icon="chat-o" text="客服" @click="service" />
+      <van-action-bar-icon
+        icon="cart-o"
+        text="购物车"
+        :badge="store.state.cartList.length"
+        @click="toCart"
+      />
+      <van-action-bar-button
+        type="warning"
+        text="加入购物车"
+        @click="handleAddCart"
+      />
+      <van-action-bar-button type="danger" text="立即购买" @click="clickBuy" />
+    </van-action-bar>
   </div>
 </template>
 
@@ -24,6 +40,10 @@
 import Header from "../../components/Header.vue";
 import { reactive, toRefs } from "vue";
 import FoodList from "./components/FoodList";
+import { Toast } from "vant";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
 export default {
   components: {
     Header,
@@ -31,6 +51,8 @@ export default {
   },
 
   setup() {
+    const store = useStore();
+    const router = useRouter();
     let data = reactive({
       title: "鱼拿酸菜鱼",
       img: "https://img1.baidu.com/it/u=1599947592,1695977044&fm=253&fmt=auto&app=138&f=JPEG?w=640&h=440",
@@ -111,8 +133,48 @@ export default {
       ],
     });
 
+    // 客服的点击
+    const service = () => {
+      Toast.fail("敬请期待...");
+    };
+
+    // 跳转购物车
+    const toCart = () => {
+      router.push("./cart");
+    };
+
+    // 加入购物车
+    const handleAddCart = (type) => {
+      let newList = [];
+      data.storeData.forEach((item) => {
+        item.data.items?.forEach((items) => {
+          items.children.forEach((itemss) => {
+            if (itemss.num > 0) {
+              newList.push(itemss);
+            }
+          });
+        });
+      });
+      if (newList.length === 0) {
+        Toast("请选择商品");
+        return;
+      }
+      store.commit("ADDCART", newList);
+      type === "buy" ? toCart() : "";
+    };
+
+    // 立即购买点击
+    const clickBuy = () => {
+      handleAddCart("buy");
+    };
+
     return {
       ...toRefs(data),
+      service,
+      handleAddCart,
+      store,
+      clickBuy,
+      toCart,
     };
   },
 };
