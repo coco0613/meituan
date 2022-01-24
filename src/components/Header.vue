@@ -2,20 +2,37 @@
   <div class="header">
     <van-icon name="arrow-left" class="icon" @click="toBack" />
     <div>{{ title }}</div>
+    <div class="edit" v-if="edit" @click="editClick">编辑</div>
   </div>
 </template>
 
 <script>
 import { useRouter } from "vue-router";
+import emitter from "../common/js/evenbus.js";
+import { Toast } from "vant";
+import { useStore } from "vuex";
+
 export default {
-  props: ["title"],
+  props: ["title", "edit"],
   setup() {
+    const store = useStore();
     const router = useRouter();
     const toBack = () => {
       router.back();
     };
+
+    // 编辑按钮
+    const editClick = () => {
+      if (store.state.cartList.length) {
+        emitter.emit("edit");
+      } else {
+        Toast.fail("购物车空空如也");
+      }
+    };
+
     return {
       toBack,
+      editClick,
     };
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <div class="cart">
-    <Header title="购物车" />
-    <CartDetails v-if="isShow" />
+    <Header title="购物车" :edit="true" />
+    <CartDetails v-if="isShow" :changeShow="changeShow" />
     <Blank v-else />
     <Footer />
   </div>
@@ -31,12 +31,17 @@ export default {
         isShow.value = false;
       }
     };
+
+    const changeShow = () => {
+      isShow.value = false;
+    };
     onMounted(() => {
       init();
     });
 
     return {
       isShow,
+      changeShow,
     };
   },
 };

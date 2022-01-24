@@ -12,6 +12,9 @@ export default createStore({
     PAY(state, value) {
       state.orderList = value;
     },
+    DELETE(state, value) {
+      state.cartList = value;
+    },
   },
   actions: {},
 });

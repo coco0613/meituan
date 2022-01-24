@@ -15,11 +15,26 @@
       @submit="onSubmit"
       class="submit-all"
       button-color="#ffc400"
+      v-if="isDelete"
     >
       <van-checkbox v-model="checked" checked-color="#ffc400" @click="choseAll">
         全选
       </van-checkbox>
     </van-submit-bar>
+
+    <!-- 删除 -->
+    <div class="buy" v-else>
+      <div class="left">
+        <van-checkbox
+          v-model="checked"
+          checked-color="#ffc400"
+          @click="choseAll"
+        >
+          全选
+        </van-checkbox>
+      </div>
+      <div class="delete" @click="deleteClick">删除</div>
+    </div>
   </div>
 </template>
 
@@ -27,14 +42,18 @@
 import { computed, onMounted, reactive, toRefs } from "vue";
 import { useStore } from "vuex";
 import FoodAdd from "../../../components/FoodAdd.vue";
-import { Toast } from "_vant@3.4.2@vant";
+import { Toast } from "vant";
+import emitter from "../../../common/js/evenbus.js";
+
 export default {
   components: { FoodAdd },
-  setup() {
+  props: ["changeShow"],
+  setup(props) {
     const store = useStore();
     let data = reactive({
       result: [],
       checked: true,
+      isDelete: true,
     });
 
     // 商品默认选中的初始化
@@ -65,16 +84,18 @@ export default {
     };
 
     // 更新数据
-    const updata = () => {
-      return store.state.cartList.filter((item) =>
-        data.result.includes(item.id)
-      );
+    const updata = (type) => {
+      return store.state.cartList.filter((item) => {
+        return type === 2
+          ? data.result.includes(item.id)
+          : !data.result.includes(item.id);
+      });
     };
 
     // 结算按钮
     const onSubmit = () => {
       if (data.result.length !== 0) {
-        store.commit("PAY", updata());
+        store.commit("PAY", updata(2));
       } else {
         Toast.fail("请选择要结算的商品");
       }
@@ -92,9 +113,7 @@ export default {
 
     // 总价
     const allPrice = computed(() => {
-      let countList = store.state.cartList.filter((item) =>
-        data.result.includes(item.id)
-      );
+      let countList = updata(2);
       let sum = 0;
       countList.forEach((item) => {
         sum += item.num * item.price;
@@ -102,6 +121,28 @@ export default {
       return sum;
     });
 
+    // 监听编辑的点击
+    emitter.on("edit", () => {
+      data.isDelete = !data.isDelete;
+    });
+
+    // 删除按钮
+    const deleteClick = () => {
+      if (data.result.length) {
+        // 更新删除后的购物车的数据
+        store.commit("DELETE", updata(1));
+
+        // 删除后的选中
+        data.result = [];
+
+        // 购物车无数据时展示兜底
+        if (store.state.cartList.length === 0) {
+          props.changeShow();
+        }
+      } else {
+        Toast.fail("请选择要删除的商品");
+      }
+    };
     return {
       ...toRefs(data),
       store,
@@ -110,6 +151,7 @@ export default {
       choseAll,
       groupChange,
       allPrice,
+      deleteClick,
     };
   },
 };
@@ -129,7 +171,7 @@ export default {
 
   .buy {
     position: fixed;
-    bottom: 58px;
+    bottom: 48px;
     right: 0;
     display: flex;
     justify-content: space-between;
