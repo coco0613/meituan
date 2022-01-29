@@ -1,13 +1,27 @@
 <template>
-  MyHome
+  <div class="home">
+    <div class="content"></div>
+    <Footer />
+  </div>
 </template>
 
 <script>
+import Footer from "../../components/Footer";
 export default {
-  name: "MyHome.vue"
+  components: {
+    Footer
+  }
 }
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
+.home {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  .content {
+    flex: 1;
+    overflow-y: auto;
+  }
+}
 </style>
