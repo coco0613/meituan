@@ -1,6 +1,10 @@
 <template>
   <div class="hello">
-    vue3仿美团项目
+    <div>vue3仿美团项目</div>
+    <van-button type="primary">主要按钮</van-button>
+    <svg class="icon" aria-hidden="true">
+      <use xlink:href="#icon-sousuo"></use>
+    </svg>
   </div>
 </template>
 
@@ -11,6 +15,11 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
+<style lang="less" scoped>
+  .hello{
+    font-size: 30px;
+    div{
+      color: aquamarine;
+    }
+  }
 </style>
