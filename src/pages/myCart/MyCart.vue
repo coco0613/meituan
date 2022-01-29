@@ -1,16 +1,13 @@
 <template>
-  <div></div>
+  购物车
 </template>
 
 <script>
-
 export default {
-  name: 'App',
+  name: "MyCart"
 }
 </script>
 
-<style>
-#app {
+<style scoped>
 
-}
 </style>

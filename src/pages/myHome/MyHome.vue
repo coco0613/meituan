@@ -1,16 +1,13 @@
 <template>
-  <div></div>
+  MyHome
 </template>
 
 <script>
-
 export default {
-  name: 'App',
+  name: "MyHome.vue"
 }
 </script>
 
-<style>
-#app {
+<style scoped>
 
-}
 </style>

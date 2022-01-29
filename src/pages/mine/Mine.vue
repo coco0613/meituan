@@ -1,16 +1,13 @@
 <template>
-  <div></div>
+  个人中心
 </template>
 
 <script>
-
 export default {
-  name: 'App',
+  name: "Mine"
 }
 </script>
 
-<style>
-#app {
+<style scoped>
 
-}
 </style>
