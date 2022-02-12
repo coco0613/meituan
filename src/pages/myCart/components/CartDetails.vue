@@ -41,6 +41,7 @@
 <script>
 import { computed, onMounted, reactive, toRefs } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import FoodAdd from "../../../components/FoodAdd.vue";
 import { Toast } from "vant";
 import emitter from "../../../common/js/evenbus.js";
@@ -50,6 +51,7 @@ export default {
   props: ["changeShow"],
   setup(props) {
     const store = useStore();
+    const router = useRouter();
     let data = reactive({
       result: [],
       checked: true,
@@ -96,6 +98,12 @@ export default {
     const onSubmit = () => {
       if (data.result.length !== 0) {
         store.commit("PAY", updata(2));
+        router.push({
+          path: "/createorder",
+          query: {
+            list: data.result,
+          },
+        });
       } else {
         Toast.fail("请选择要结算的商品");
       }
@@ -137,6 +145,7 @@ export default {
 
         // 购物车无数据时展示兜底
         if (store.state.cartList.length === 0) {
+          store.commit("EDIT", "delete");
           props.changeShow();
         }
       } else {
